@@ -4,13 +4,13 @@
 TARGET   = Richkware
 
 ifeq ($(OS),Windows_NT)
-    CXX=g++
-    RM=cmd /C rmdir /Q /S
-    MKDIR=mkdir
+	CXX=g++
+	RM=cmd /C rmdir /Q /S
+	MKDIR=mkdir
 else
-    CXX=x86_64-w64-mingw32-g++
-    RM=rm -rf
-    MKDIR=mkdir -p
+	CXX=x86_64-w64-mingw32-g++
+	RM=rm -rf
+	MKDIR=mkdir -p
 endif
 
 # flags
@@ -22,12 +22,15 @@ EFLAG= -lws2_32
 SRCDIR   = src
 OBJDIR   = obj
 BINDIR   = bin
+TESTDIR  = test
 
 # files
-SOURCES  := $(wildcard $(SRCDIR)/*.cpp)
-INCLUDES := $(wildcard $(SRCDIR)/*.h)
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
-EXECUTABLE= $(BINDIR)/$(TARGET).exe
+SOURCES		:= $(wildcard $(SRCDIR)/*.cpp)
+INCLUDES	:= $(wildcard $(SRCDIR)/*.h)
+OBJECTS		:= $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
+EXECUTABLE	:= $(BINDIR)/$(TARGET).exe
+TEST_SOURCES:= $(wildcard $(TESTDIR)/*.cpp)
+TEST_OBJECTS:= $(TEST_SOURCES:$(TESTDIR)/%.cpp=$(TESTDIR)/obj/%.o)
 
 .PHONY : all
 all: clean make_directories $(EXECUTABLE)
@@ -41,8 +44,14 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 $(EXECUTABLE): $(OBJECTS) main.o
 	$(CXX) $(LDFLAGS) $(OBJECTS) $(OBJDIR)/main.o $(EFLAG) -o $@
 
-main.o: 
+main.o:
 	$(CXX) $(CXXFLAGS) main.cpp -o $(OBJDIR)/main.o
+
+.PHONY : test
+test: $(TESTER)
+
+$(TESTER): $(OBJECTS) test.o
+	$(CXX) $(LDFLAGS) -I test/include/catch2 $(OBJECTS) $(TEST_OBJECTS) $(EFLAG) -o $@
 
 .PHONY : make_directories
 make_directories:
