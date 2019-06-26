@@ -2,8 +2,8 @@
 *      Copyright 2016 Riccardo Melioli. All Rights Reserved.
 */
 #define CATCH_CONFIG_RUNNER
-#include "src/richkware.h"
-#include <include/catch2/catch.hpp>
+//#include "src/richkware.h"
+#include "include/catch.hpp"
 
 int main() {
     const char *appName = "Richk";
@@ -16,7 +16,7 @@ int main() {
     //Richkware richkware(appName, defaultEncryptionKey, serverAddress, port, associatedUser);
     // without RichkwareManagerServer
     //Richkware richkware(appName, defaultEncryptionKey);
-    int result = Catch::Session().run( argc, argv );
+    //int result = Catch::Session().run( 0, {"",""} );
 
     std::cout << "test" ;
     Sleep(5000);
